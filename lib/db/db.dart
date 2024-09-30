@@ -13,10 +13,6 @@ class AppDatabase extends _$AppDatabase {
   // These are described in the getting started guide: https://drift.simonbinder.eu/getting-started/#open
   AppDatabase() : super(_openConnection());
 
-  Future<List<AnimalEntry>> getAllAnimals() async {
-    return await managers.animalEntries.get();
-   }
-
   @override
   int get schemaVersion => 1;
 

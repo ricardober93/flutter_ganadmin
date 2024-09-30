@@ -10,6 +10,7 @@ class AnimalEntries extends Table {
   TextColumn get weight => text().nullable()();
   TextColumn get price => text().nullable()();
   TextColumn get health => text().nullable()();
+  TextColumn get type => text().nullable()();
   TextColumn get exportType => text().nullable()();
   TextColumn get electronicId => text().nullable()();
   BoolColumn  get isInventoried => boolean().withDefault(const Constant(false))();

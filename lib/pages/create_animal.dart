@@ -13,10 +13,24 @@ class CreateAnimal extends StatelessWidget {
 
     var animalCreateCtr = Get.put(CreateAnimalController());
 
+    animalCreateCtr.animalType.text = type.value;
     createAnimal() {
       //VALIDAR FORMULARIO
 
-      Get.snackbar('Nuevo Animal Creado', "Se ha creado el Animal numero 2");
+     try{
+       final animal = animalCreateCtr.createAnimal();
+       Get.toNamed('/animals');
+       Get.snackbar('Nuevo Animal Creado', "Se ha creado el Animal",
+       backgroundColor: Colors.green,
+       colorText: Colors.white);
+       
+     }catch (e){
+       Get.snackbar('Error al crear el animal', "",
+           backgroundColor: Colors.red,
+           colorText: Colors.white
+       );
+     }
+
     }
 
     return Scaffold(
@@ -31,6 +45,14 @@ class CreateAnimal extends StatelessWidget {
               controller: animalCreateCtr.animalName,
               decoration: const InputDecoration(
                 labelText: 'Nombre del Animal',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: animalCreateCtr.animalType,
+              decoration: const InputDecoration(
+                labelText: 'tipo de adquisicion',
                 border: OutlineInputBorder(),
               ),
             ),

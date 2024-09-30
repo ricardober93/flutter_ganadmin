@@ -12,40 +12,57 @@ class AnimalPage extends StatelessWidget {
 
     ctr.onInit();
 
-
     return Scaffold(
       drawer: const DrawerNav(),
       appBar: AppBar(
         title: const Text('Lista de Animales'),
       ),
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        child:
-            const Text('lista de animales'), // just call `controller.something`
-      ),
+      body: Obx(() {
+        if (ctr.isLoading.value) {
+          return const CircularProgressIndicator(
+            color: Colors.green,
+          );
+        }
+        return ListView.builder(
+          itemCount: ctr.animals.length,
+          itemBuilder: (context, index) {
+            final animal = ctr.animals[index];
+            return ListTile(
+              title: Text(animal.name),
+              subtitle: Text('Ingreso: ${animal.birthDate}'),
+              trailing: IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  // Eliminar el animal
+                  ctr.removeAnimal(index);
+                },
+              ),
+            );
+          },
+        );
+      }),
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
           onPressed: () {
             // Trigger the BottomSheet
-            Get.bottomSheet(bottomSheet(context), backgroundColor: Colors.white);
-
+            Get.bottomSheet(bottomSheet(context),
+                backgroundColor: Colors.white);
           }),
-
     );
   }
 
-  Widget bottomSheet(BuildContext context){
-
+  Widget bottomSheet(BuildContext context) {
     void redirectToCreateAnimalTypeBirth() {
       Navigator.pop(context);
-      Get.toNamed("/create-animal", arguments: 'birth', preventDuplicates: true);
+      Get.toNamed("/create-animal",
+          arguments: 'birth', preventDuplicates: true);
     }
 
     redirectToCreateAnimalTypePurchase() {
       Navigator.pop(context);
-      Get.toNamed("/create-animal", arguments: 'purchase', preventDuplicates: true);
+      Get.toNamed("/create-animal",
+          arguments: 'purchase', preventDuplicates: true);
     }
-
 
     return Container(
       height: 350,
@@ -66,8 +83,7 @@ class AnimalPage extends StatelessWidget {
             ),
             const Text(
               '¿Cómo deseas ingresar tu nuevo animal?',
-              style: TextStyle(
-                  fontSize: 24, fontWeight: FontWeight.w700),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 16),
             SizedBox(

@@ -1,12 +1,10 @@
 import 'package:admin_animal_flutter/controllers/database_controller.dart';
 import 'package:admin_animal_flutter/db/db.dart';
-import 'package:admin_animal_flutter/db/tables.dart';
 import 'package:get/get.dart';
-
 
 class AnimalController extends GetxController {
   var isLoading = false.obs;
-  List<AnimalEntry> animals = [];
+  RxList<AnimalEntry> animals = <AnimalEntry>[].obs;
 
   var database = Get.put(DatabaseController());
 
@@ -14,14 +12,20 @@ class AnimalController extends GetxController {
     isLoading.value = !isLoading.value;
   }
 
-  getAllAnimal() async {
-    var animals = await database.db.getAllAnimals();
-    print(animals);
+  Future<void> getAllAnimal() async {
+    isLoading.value = true;
+    var res = await database.db.select(database.db.animalEntries).get();
+
+    animals.value = res.toList();
+    isLoading.value = false;
+  }
+
+  removeAnimal(int index){
+
   }
 
   @override
   void onInit() async {
-
     await Future.delayed(const Duration(seconds: 2));
     getAllAnimal();
 
