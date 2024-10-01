@@ -1,110 +1,181 @@
 import 'package:admin_animal_flutter/controllers/create_animal_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class CreateAnimal extends StatelessWidget {
-  CreateAnimal({super.key});
-
-  final RxString type = 'birth'.obs;
+  const CreateAnimal({super.key});
 
   @override
   Widget build(BuildContext context) {
-    type.value = Get.arguments as String;
+    final type = Get.arguments;
 
     var animalCreateCtr = Get.put(CreateAnimalController());
 
-    animalCreateCtr.animalType.text = type.value;
+    animalCreateCtr.animalType.value = type;
+
+    // Función para crear el animal
     createAnimal() {
-      //VALIDAR FORMULARIO
-
-     try{
-       final animal = animalCreateCtr.createAnimal();
-       Get.toNamed('/animals');
-       Get.snackbar('Nuevo Animal Creado', "Se ha creado el Animal",
-       backgroundColor: Colors.green,
-       colorText: Colors.white);
-       
-     }catch (e){
-       Get.snackbar('Error al crear el animal', "",
-           backgroundColor: Colors.red,
-           colorText: Colors.white
-       );
-     }
-
+      try {
+        animalCreateCtr.createAnimal();
+        Get.toNamed('/animals');
+        Get.snackbar('Nuevo Animal Creado', "Se ha creado el Animal",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      } catch (e) {
+        Get.snackbar('Error al crear el animal', "",
+            backgroundColor: Colors.red, colorText: Colors.white);
+      }
     }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Animal'),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            TextField(
-              controller: animalCreateCtr.animalName,
-              decoration: const InputDecoration(
-                labelText: 'Nombre del Animal',
-                border: OutlineInputBorder(),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Nombre del Animal
+              TextField(
+                controller: animalCreateCtr.animalName,
+                decoration: const InputDecoration(
+                  labelText: 'Nombre del Animal',
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: animalCreateCtr.animalType,
-              decoration: const InputDecoration(
-                labelText: 'tipo de adquisicion',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Obx(() {
-              if (type.value == "birth") {
-                return TextField(
-                  controller: animalCreateCtr.animalBirthDate,
-                  decoration: const InputDecoration(
-                    labelText: 'Fecha de nacimiento',
-                    border: OutlineInputBorder(),
-                  ),
-                  readOnly: true,
-                  onTap: () => animalCreateCtr.selectDate(context),
-                );
-              } else {
-                return Column(
-                  children: [
-                    TextField(
-                      controller: animalCreateCtr.animalPurchasedDate,
-                      decoration: const InputDecoration(
-                        labelText: 'Fecha de Compra',
-                        border: OutlineInputBorder(),
+              const SizedBox(height: 16),
+
+              // Tipo de Adquisición
+              Obx(  () => _buildDropdown(
+                label: "Adquisición del animal",
+                value: animalCreateCtr.animalType.value.isEmpty
+                    ? null
+                    : animalCreateCtr.animalType.value,
+                items: animalCreateCtr.items,
+                onChanged: (String? newValue) {
+                  animalCreateCtr.setSelected(newValue!);
+                },
+              ),),
+              const SizedBox(height: 16),
+
+              // Formulario Condicional
+              Obx(() {
+                if (animalCreateCtr.animalType.value == "birth") {
+                  return TextField(
+                    controller: animalCreateCtr.animalBirthDate,
+                    decoration: const InputDecoration(
+                      labelText: 'Fecha de nacimiento',
+                      border: OutlineInputBorder(),
+                    ),
+                    readOnly: true,
+                    onTap: () => animalCreateCtr.selectDate(context),
+                  );
+                } else {
+                  return Column(
+                    children: [
+                      TextField(
+                        controller: animalCreateCtr.animalPurchasedDate,
+                        decoration: const InputDecoration(
+                          labelText: 'Fecha de Compra',
+                          border: OutlineInputBorder(),
+                        ),
+                        readOnly: true,
+                        onTap: () =>
+                            animalCreateCtr.selectPurchaseDate(context),
                       ),
-                      readOnly: true,
-                      onTap: () => animalCreateCtr.selectPurchaseDate(context),
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    TextField(
-                      keyboardType: TextInputType.number,
-                      controller: animalCreateCtr.animalPrice,
-                      decoration: const InputDecoration(
-                        labelText: 'Precio del animal',
-                        border: OutlineInputBorder(),
+                      const SizedBox(height: 16),
+                      TextField(
+                        keyboardType: TextInputType.number,
+                        controller: animalCreateCtr.animalPrice,
+                        decoration: const InputDecoration(
+                          labelText: 'Precio del animal',
+                          border: OutlineInputBorder(),
+                        ),
                       ),
-                    ),
-                  ],
-                );
-              }
-            }),
-            const SizedBox(
-              height: 8,
-            ),
-            Center(
-              child: TextButton(
-                onPressed: () {},
-                child: Text('Agregar mas detalles'),
+                    ],
+                  );
+                }
+              }),
+              const SizedBox(height: 16),
+
+              // Botón para Mostrar Más Detalles
+              Center(
+                child: TextButton(
+                  onPressed: animalCreateCtr.toggleShowMore,
+                  child: Obx(() => Text(animalCreateCtr.showMore.value
+                      ? 'Ocultar más detalles'
+                      : 'Mostrar más detalles')),
+                ),
               ),
-            )
-          ],
+
+              // Más Detalles
+              Obx(() {
+                if (animalCreateCtr.showMore.value) {
+                  return Column(
+                    children: [
+                      _buildCheckbox(
+                        value: animalCreateCtr.animalIsDiscarded.value,
+                        onChanged: animalCreateCtr.toggleIsDiscarded,
+                        label: '¿Es un animal de descarte?',
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d*\.?\d{0,2}')),
+                        ],
+                        controller: animalCreateCtr.animalWeight,
+                        decoration: const InputDecoration(
+                          labelText: 'Peso del animal',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Estado del Animal
+                      _buildDropdown(
+                        label: "Estado del animal",
+                        value: animalCreateCtr.animalStatus.value.isEmpty
+                            ? null
+                            : animalCreateCtr.animalStatus.value,
+                        items: animalCreateCtr.statusList,
+                        onChanged: (String? newValue) {
+                          animalCreateCtr.setStatus(newValue!);
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Checkbox de Monta
+                      _buildCheckbox(
+                        value: animalCreateCtr.animalIsStallion.value,
+                        onChanged: animalCreateCtr.toggleIsStallion,
+                        label: '¿Es un animal de monta?',
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Buscador de Animales (Padre/Madre)
+                      _buildAnimalSearchField(
+                        label: "Buscar animal",
+                        searchFunction: animalCreateCtr.searchAnimal,
+                        selectedAnimal: animalCreateCtr.codeFather,
+                        onAnimalSelect: (selectedAnimal) {
+                          animalCreateCtr.selectAnimal(selectedAnimal);
+                        },
+                        filteredList: animalCreateCtr.filteredList,
+                      ),
+                    ],
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              })
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Container(
@@ -112,6 +183,94 @@ class CreateAnimal extends StatelessWidget {
         child: FilledButton(
             onPressed: createAnimal, child: const Text("Crear Ficha")),
       ),
+    );
+  }
+
+  // Widget para Dropdown personalizado
+  Widget _buildDropdown({
+    required String label,
+    required String? value,
+    required List<String> items,
+    required Function(String?) onChanged,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(4.0),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          isExpanded: true,
+          value: value,
+          hint: Text(label),
+          onChanged: onChanged,
+          items: items.map((String item) {
+            return DropdownMenuItem<String>(
+              value: item,
+              child: Text(item),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  // Widget para Checkbox personalizado
+  Widget _buildCheckbox({
+    required bool value,
+    required Function(bool?) onChanged,
+    required String label,
+  }) {
+    return Row(
+      children: [
+        Checkbox(value: value, onChanged: onChanged),
+        Text(label),
+      ],
+    );
+  }
+
+  // Widget para campo de búsqueda de animales
+  Widget _buildAnimalSearchField({
+    required String label,
+    required Function(String) searchFunction,
+    required TextEditingController selectedAnimal,
+    required Function(String) onAnimalSelect,
+    required List<String> filteredList,
+  }) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: TextField(
+            decoration: InputDecoration(
+              labelText: label,
+              border: const OutlineInputBorder(),
+            ),
+            onChanged: searchFunction,
+            controller:  selectedAnimal,
+          ),
+        ),
+       Obx( () {
+         if (filteredList.isNotEmpty) {
+         return  SizedBox(
+             height: 200,
+             child: ListView.builder(
+               itemCount: filteredList.length,
+               itemBuilder: (context, index) {
+                 return ListTile(
+                   title: Text(filteredList[index]),
+                   onTap: () => onAnimalSelect(filteredList[index]),
+                 );
+               },
+             ),
+           );
+
+       } else {
+           return const SizedBox();
+         }
+       })
+      ],
     );
   }
 }

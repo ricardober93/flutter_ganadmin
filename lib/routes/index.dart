@@ -9,7 +9,7 @@ var routes = [
   GetPage(name: '/home', page: () =>  const HomePage()),
   GetPage(name: '/animals', page: ()=> const AnimalPage()),
   GetPage(name: '/create-animal',
-      page: ()=>  CreateAnimal(),
+      page: ()=>  const CreateAnimal(),
       transition: Transition.leftToRightWithFade,
       transitionDuration: const  Duration(milliseconds: 350)
   )

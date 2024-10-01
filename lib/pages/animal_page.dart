@@ -1,4 +1,5 @@
 import 'package:admin_animal_flutter/controllers/animal_controller.dart';
+import 'package:admin_animal_flutter/extension/dateTime_extension.dart';
 import 'package:admin_animal_flutter/widgets/Drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,8 +20,10 @@ class AnimalPage extends StatelessWidget {
       ),
       body: Obx(() {
         if (ctr.isLoading.value) {
-          return const CircularProgressIndicator(
-            color: Colors.green,
+          return const Center(
+            child:  CircularProgressIndicator(
+              color: Colors.green,
+            )
           );
         }
         return ListView.builder(
@@ -29,7 +32,7 @@ class AnimalPage extends StatelessWidget {
             final animal = ctr.animals[index];
             return ListTile(
               title: Text(animal.name),
-              subtitle: Text('Ingreso: ${animal.birthDate}'),
+              subtitle: Text('Ingreso: ${animal.birthDate!.format()}'),
               trailing: IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () {

@@ -13,6 +13,7 @@ class AnimalEntries extends Table {
   TextColumn get type => text().nullable()();
   TextColumn get exportType => text().nullable()();
   TextColumn get electronicId => text().nullable()();
+  BoolColumn  get isDiscarded => boolean().nullable().withDefault(const Constant(false))();
   BoolColumn  get isInventoried => boolean().withDefault(const Constant(false))();
   BoolColumn get isStallion => boolean().withDefault(const Constant(false))();
   IntColumn get breedId =>

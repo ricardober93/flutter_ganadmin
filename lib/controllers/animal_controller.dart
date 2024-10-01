@@ -3,7 +3,7 @@ import 'package:admin_animal_flutter/db/db.dart';
 import 'package:get/get.dart';
 
 class AnimalController extends GetxController {
-  var isLoading = false.obs;
+  var isLoading = true.obs;
   RxList<AnimalEntry> animals = <AnimalEntry>[].obs;
 
   var database = Get.put(DatabaseController());
