@@ -1,4 +1,5 @@
 import 'package:admin_animal_flutter/controllers/create_animal_controller.dart';
+import 'package:admin_animal_flutter/widgets/AnimalSearchField.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -11,6 +12,7 @@ class CreateAnimal extends StatelessWidget {
     final type = Get.arguments;
 
     var animalCreateCtr = Get.put(CreateAnimalController());
+    animalCreateCtr.onInit();
 
     animalCreateCtr.animalType.value = type;
 
@@ -159,10 +161,20 @@ class CreateAnimal extends StatelessWidget {
                       const SizedBox(height: 16),
 
                       // Buscador de Animales (Padre/Madre)
-                      _buildAnimalSearchField(
-                        label: "Buscar animal",
+                      AnimalSearchField(
+                        label: "Buscar nombre del padre animal ",
                         searchFunction: animalCreateCtr.searchAnimal,
-                        selectedAnimal: animalCreateCtr.codeFather,
+                        selectedAnimal: animalCreateCtr.animalNameFather,
+                        onAnimalSelect: (selectedAnimal) {
+                          animalCreateCtr.selectAnimal(selectedAnimal);
+                        },
+                        filteredList: animalCreateCtr.filteredList,
+                      ),
+                      const SizedBox(height: 16),
+                      AnimalSearchField(
+                        label: "Buscar nombre de la madre animal ",
+                        searchFunction: animalCreateCtr.searchAnimal,
+                        selectedAnimal: animalCreateCtr.animalNameMother,
                         onAnimalSelect: (selectedAnimal) {
                           animalCreateCtr.selectAnimal(selectedAnimal);
                         },
@@ -226,50 +238,6 @@ class CreateAnimal extends StatelessWidget {
       children: [
         Checkbox(value: value, onChanged: onChanged),
         Text(label),
-      ],
-    );
-  }
-
-  // Widget para campo de búsqueda de animales
-  Widget _buildAnimalSearchField({
-    required String label,
-    required Function(String) searchFunction,
-    required TextEditingController selectedAnimal,
-    required Function(String) onAnimalSelect,
-    required List<String> filteredList,
-  }) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: TextField(
-            decoration: InputDecoration(
-              labelText: label,
-              border: const OutlineInputBorder(),
-            ),
-            onChanged: searchFunction,
-            controller:  selectedAnimal,
-          ),
-        ),
-       Obx( () {
-         if (filteredList.isNotEmpty) {
-         return  SizedBox(
-             height: 200,
-             child: ListView.builder(
-               itemCount: filteredList.length,
-               itemBuilder: (context, index) {
-                 return ListTile(
-                   title: Text(filteredList[index]),
-                   onTap: () => onAnimalSelect(filteredList[index]),
-                 );
-               },
-             ),
-           );
-
-       } else {
-           return const SizedBox();
-         }
-       })
       ],
     );
   }

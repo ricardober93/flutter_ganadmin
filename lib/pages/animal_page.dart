@@ -19,7 +19,7 @@ class AnimalPage extends StatelessWidget {
         title: const Text('Lista de Animales'),
       ),
       body: Obx(() {
-        if (ctr.isLoading.value) {
+        if (!ctr.isLoading.value) {
           return const Center(
             child:  CircularProgressIndicator(
               color: Colors.green,

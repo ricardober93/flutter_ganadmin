@@ -1,3 +1,4 @@
+import 'package:admin_animal_flutter/controllers/animal_controller.dart';
 import 'package:admin_animal_flutter/controllers/database_controller.dart';
 import 'package:admin_animal_flutter/db/db.dart';
 import 'package:admin_animal_flutter/extension/dateTime_extension.dart';
@@ -10,6 +11,8 @@ class CreateAnimalController extends GetxController {
 
   var database = Get.put(DatabaseController());
 
+  var animalCtr = Get.put(AnimalController());
+
   var animalName = TextEditingController();
   var animalBirthDate = TextEditingController();
   var animalPurchasedDate = TextEditingController();
@@ -19,18 +22,19 @@ class CreateAnimalController extends GetxController {
   var animalPrice = TextEditingController();
   var animalType = "birth".obs;
   var animalStatus = "".obs;
-  var codeFather = TextEditingController();
+  var animalNameFather = TextEditingController();
+  var codeFather;
+  var animalNameMother = TextEditingController();
+  var codeMother;
   var animalWeight = TextEditingController();
 
   List<String> items = ["birth", "Purchase"];
   var statusList = ['Sano', "Muerto", 'Enfermo'];
-  var filteredList = <String>[].obs;
-  var animalList = <String>['Perro', 'Gato', 'Caballo', 'Vaca', 'Oveja'].obs;
+  var filteredList = <AnimalEntry>[].obs;
+  var animalList = <AnimalEntry>[].obs;
 
   void toggleIsDiscarded(bool? value) {
-
     animalIsDiscarded.value = value!;
-
   }
 
   void toggleIsStallion(bool? value) {
@@ -50,19 +54,20 @@ class CreateAnimalController extends GetxController {
   }
 
   void searchAnimal(String query) {
-    codeFather.text = query;
 
     if (query.isEmpty) {
+
       filteredList.assignAll(animalList);
     } else {
       filteredList.assignAll(animalList
-          .where((animal) => animal.toLowerCase().contains(query.toLowerCase()))
+          .where((animal) =>
+              animal.name.toLowerCase().contains(query.toLowerCase()))
           .toList());
     }
   }
 
-  void selectAnimal(String animal) {
-    codeFather.text = animal;
+  void selectAnimal(String name) {
+    animalNameFather.text = name;
     filteredList.assignAll(animalList);
   }
 
@@ -93,23 +98,37 @@ class CreateAnimalController extends GetxController {
   }
 
   Future<int> createAnimal() async {
+
+    codeFather = animalList.firstWhere( (animal) => animal.name == animalNameFather.text ).id;
+    codeMother = animalList.firstWhere( (animal) => animal.name == animalNameMother.text ).id;
+
     return await database.db.into(database.db.animalEntries).insert(
         AnimalEntriesCompanion.insert(
             birthDate: d.Value(DateTime.parse(animalBirthDate.text)),
             name: animalName.text,
             isInventoried: d.Value(animalIsInventoried.value),
-            isStallion: d.Value(animalIsStallion.value)));
+            isStallion: d.Value(animalIsStallion.value),
+            health: d.Value(animalStatus.value),
+            weight: d.Value(animalWeight.text),
+            codeFather: d.Value(codeFather),
+          isDiscarded: d.Value(animalIsDiscarded.value),
+           codeMother: d.Value(codeMother)
+        ),
+
+    );
   }
 
   void toggleShowMore() => showMore.value = !showMore.value;
 
-
   @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
+  void onInit() async {
+    await animalCtr.getAllAnimal();
 
-    filteredList.assignAll(animalList);
+
+    animalList.assignAll(animalCtr.animals);
+    filteredList.assignAll(animalCtr.animals);
+    print(animalList);
+    super.onInit();
   }
 
   @override

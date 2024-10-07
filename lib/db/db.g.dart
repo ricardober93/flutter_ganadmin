@@ -209,6 +209,12 @@ class $AnimalEntriesTable extends AnimalEntries
   late final GeneratedColumn<DateTime> birthDate = GeneratedColumn<DateTime>(
       'birth_date', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _purchasedDateMeta =
+      const VerificationMeta('purchasedDate');
+  @override
+  late final GeneratedColumn<DateTime> purchasedDate =
+      GeneratedColumn<DateTime>('purchased_date', aliasedName, true,
+          type: DriftSqlType.dateTime, requiredDuringInsert: false);
   static const VerificationMeta _imageURLMeta =
       const VerificationMeta('imageURL');
   @override
@@ -220,10 +226,20 @@ class $AnimalEntriesTable extends AnimalEntries
   late final GeneratedColumn<String> weight = GeneratedColumn<String>(
       'weight', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _priceMeta = const VerificationMeta('price');
+  @override
+  late final GeneratedColumn<String> price = GeneratedColumn<String>(
+      'price', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _healthMeta = const VerificationMeta('health');
   @override
   late final GeneratedColumn<String> health = GeneratedColumn<String>(
       'health', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+      'type', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _exportTypeMeta =
       const VerificationMeta('exportType');
@@ -237,6 +253,16 @@ class $AnimalEntriesTable extends AnimalEntries
   late final GeneratedColumn<String> electronicId = GeneratedColumn<String>(
       'electronic_id', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _isDiscardedMeta =
+      const VerificationMeta('isDiscarded');
+  @override
+  late final GeneratedColumn<bool> isDiscarded = GeneratedColumn<bool>(
+      'is_discarded', aliasedName, true,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("is_discarded" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _isInventoriedMeta =
       const VerificationMeta('isInventoried');
   @override
@@ -295,11 +321,15 @@ class $AnimalEntriesTable extends AnimalEntries
         id,
         name,
         birthDate,
+        purchasedDate,
         imageURL,
         weight,
+        price,
         health,
+        type,
         exportType,
         electronicId,
+        isDiscarded,
         isInventoried,
         isStallion,
         breedId,
@@ -330,6 +360,12 @@ class $AnimalEntriesTable extends AnimalEntries
       context.handle(_birthDateMeta,
           birthDate.isAcceptableOrUnknown(data['birth_date']!, _birthDateMeta));
     }
+    if (data.containsKey('purchased_date')) {
+      context.handle(
+          _purchasedDateMeta,
+          purchasedDate.isAcceptableOrUnknown(
+              data['purchased_date']!, _purchasedDateMeta));
+    }
     if (data.containsKey('image_u_r_l')) {
       context.handle(_imageURLMeta,
           imageURL.isAcceptableOrUnknown(data['image_u_r_l']!, _imageURLMeta));
@@ -338,9 +374,17 @@ class $AnimalEntriesTable extends AnimalEntries
       context.handle(_weightMeta,
           weight.isAcceptableOrUnknown(data['weight']!, _weightMeta));
     }
+    if (data.containsKey('price')) {
+      context.handle(
+          _priceMeta, price.isAcceptableOrUnknown(data['price']!, _priceMeta));
+    }
     if (data.containsKey('health')) {
       context.handle(_healthMeta,
           health.isAcceptableOrUnknown(data['health']!, _healthMeta));
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+          _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
     }
     if (data.containsKey('export_type')) {
       context.handle(
@@ -353,6 +397,12 @@ class $AnimalEntriesTable extends AnimalEntries
           _electronicIdMeta,
           electronicId.isAcceptableOrUnknown(
               data['electronic_id']!, _electronicIdMeta));
+    }
+    if (data.containsKey('is_discarded')) {
+      context.handle(
+          _isDiscardedMeta,
+          isDiscarded.isAcceptableOrUnknown(
+              data['is_discarded']!, _isDiscardedMeta));
     }
     if (data.containsKey('is_inventoried')) {
       context.handle(
@@ -401,16 +451,24 @@ class $AnimalEntriesTable extends AnimalEntries
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       birthDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}birth_date']),
+      purchasedDate: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime, data['${effectivePrefix}purchased_date']),
       imageURL: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}image_u_r_l']),
       weight: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}weight']),
+      price: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}price']),
       health: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}health']),
+      type: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}type']),
       exportType: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}export_type']),
       electronicId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}electronic_id']),
+      isDiscarded: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_discarded']),
       isInventoried: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_inventoried'])!,
       isStallion: attachedDatabase.typeMapping
@@ -436,11 +494,15 @@ class AnimalEntry extends DataClass implements Insertable<AnimalEntry> {
   final int id;
   final String name;
   final DateTime? birthDate;
+  final DateTime? purchasedDate;
   final String? imageURL;
   final String? weight;
+  final String? price;
   final String? health;
+  final String? type;
   final String? exportType;
   final String? electronicId;
+  final bool? isDiscarded;
   final bool isInventoried;
   final bool isStallion;
   final int? breedId;
@@ -451,11 +513,15 @@ class AnimalEntry extends DataClass implements Insertable<AnimalEntry> {
       {required this.id,
       required this.name,
       this.birthDate,
+      this.purchasedDate,
       this.imageURL,
       this.weight,
+      this.price,
       this.health,
+      this.type,
       this.exportType,
       this.electronicId,
+      this.isDiscarded,
       required this.isInventoried,
       required this.isStallion,
       this.breedId,
@@ -470,20 +536,32 @@ class AnimalEntry extends DataClass implements Insertable<AnimalEntry> {
     if (!nullToAbsent || birthDate != null) {
       map['birth_date'] = Variable<DateTime>(birthDate);
     }
+    if (!nullToAbsent || purchasedDate != null) {
+      map['purchased_date'] = Variable<DateTime>(purchasedDate);
+    }
     if (!nullToAbsent || imageURL != null) {
       map['image_u_r_l'] = Variable<String>(imageURL);
     }
     if (!nullToAbsent || weight != null) {
       map['weight'] = Variable<String>(weight);
     }
+    if (!nullToAbsent || price != null) {
+      map['price'] = Variable<String>(price);
+    }
     if (!nullToAbsent || health != null) {
       map['health'] = Variable<String>(health);
+    }
+    if (!nullToAbsent || type != null) {
+      map['type'] = Variable<String>(type);
     }
     if (!nullToAbsent || exportType != null) {
       map['export_type'] = Variable<String>(exportType);
     }
     if (!nullToAbsent || electronicId != null) {
       map['electronic_id'] = Variable<String>(electronicId);
+    }
+    if (!nullToAbsent || isDiscarded != null) {
+      map['is_discarded'] = Variable<bool>(isDiscarded);
     }
     map['is_inventoried'] = Variable<bool>(isInventoried);
     map['is_stallion'] = Variable<bool>(isStallion);
@@ -509,19 +587,28 @@ class AnimalEntry extends DataClass implements Insertable<AnimalEntry> {
       birthDate: birthDate == null && nullToAbsent
           ? const Value.absent()
           : Value(birthDate),
+      purchasedDate: purchasedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(purchasedDate),
       imageURL: imageURL == null && nullToAbsent
           ? const Value.absent()
           : Value(imageURL),
       weight:
           weight == null && nullToAbsent ? const Value.absent() : Value(weight),
+      price:
+          price == null && nullToAbsent ? const Value.absent() : Value(price),
       health:
           health == null && nullToAbsent ? const Value.absent() : Value(health),
+      type: type == null && nullToAbsent ? const Value.absent() : Value(type),
       exportType: exportType == null && nullToAbsent
           ? const Value.absent()
           : Value(exportType),
       electronicId: electronicId == null && nullToAbsent
           ? const Value.absent()
           : Value(electronicId),
+      isDiscarded: isDiscarded == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isDiscarded),
       isInventoried: Value(isInventoried),
       isStallion: Value(isStallion),
       breedId: breedId == null && nullToAbsent
@@ -546,11 +633,15 @@ class AnimalEntry extends DataClass implements Insertable<AnimalEntry> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       birthDate: serializer.fromJson<DateTime?>(json['birthDate']),
+      purchasedDate: serializer.fromJson<DateTime?>(json['purchasedDate']),
       imageURL: serializer.fromJson<String?>(json['imageURL']),
       weight: serializer.fromJson<String?>(json['weight']),
+      price: serializer.fromJson<String?>(json['price']),
       health: serializer.fromJson<String?>(json['health']),
+      type: serializer.fromJson<String?>(json['type']),
       exportType: serializer.fromJson<String?>(json['exportType']),
       electronicId: serializer.fromJson<String?>(json['electronicId']),
+      isDiscarded: serializer.fromJson<bool?>(json['isDiscarded']),
       isInventoried: serializer.fromJson<bool>(json['isInventoried']),
       isStallion: serializer.fromJson<bool>(json['isStallion']),
       breedId: serializer.fromJson<int?>(json['breedId']),
@@ -566,11 +657,15 @@ class AnimalEntry extends DataClass implements Insertable<AnimalEntry> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'birthDate': serializer.toJson<DateTime?>(birthDate),
+      'purchasedDate': serializer.toJson<DateTime?>(purchasedDate),
       'imageURL': serializer.toJson<String?>(imageURL),
       'weight': serializer.toJson<String?>(weight),
+      'price': serializer.toJson<String?>(price),
       'health': serializer.toJson<String?>(health),
+      'type': serializer.toJson<String?>(type),
       'exportType': serializer.toJson<String?>(exportType),
       'electronicId': serializer.toJson<String?>(electronicId),
+      'isDiscarded': serializer.toJson<bool?>(isDiscarded),
       'isInventoried': serializer.toJson<bool>(isInventoried),
       'isStallion': serializer.toJson<bool>(isStallion),
       'breedId': serializer.toJson<int?>(breedId),
@@ -584,11 +679,15 @@ class AnimalEntry extends DataClass implements Insertable<AnimalEntry> {
           {int? id,
           String? name,
           Value<DateTime?> birthDate = const Value.absent(),
+          Value<DateTime?> purchasedDate = const Value.absent(),
           Value<String?> imageURL = const Value.absent(),
           Value<String?> weight = const Value.absent(),
+          Value<String?> price = const Value.absent(),
           Value<String?> health = const Value.absent(),
+          Value<String?> type = const Value.absent(),
           Value<String?> exportType = const Value.absent(),
           Value<String?> electronicId = const Value.absent(),
+          Value<bool?> isDiscarded = const Value.absent(),
           bool? isInventoried,
           bool? isStallion,
           Value<int?> breedId = const Value.absent(),
@@ -599,12 +698,17 @@ class AnimalEntry extends DataClass implements Insertable<AnimalEntry> {
         id: id ?? this.id,
         name: name ?? this.name,
         birthDate: birthDate.present ? birthDate.value : this.birthDate,
+        purchasedDate:
+            purchasedDate.present ? purchasedDate.value : this.purchasedDate,
         imageURL: imageURL.present ? imageURL.value : this.imageURL,
         weight: weight.present ? weight.value : this.weight,
+        price: price.present ? price.value : this.price,
         health: health.present ? health.value : this.health,
+        type: type.present ? type.value : this.type,
         exportType: exportType.present ? exportType.value : this.exportType,
         electronicId:
             electronicId.present ? electronicId.value : this.electronicId,
+        isDiscarded: isDiscarded.present ? isDiscarded.value : this.isDiscarded,
         isInventoried: isInventoried ?? this.isInventoried,
         isStallion: isStallion ?? this.isStallion,
         breedId: breedId.present ? breedId.value : this.breedId,
@@ -617,14 +721,21 @@ class AnimalEntry extends DataClass implements Insertable<AnimalEntry> {
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       birthDate: data.birthDate.present ? data.birthDate.value : this.birthDate,
+      purchasedDate: data.purchasedDate.present
+          ? data.purchasedDate.value
+          : this.purchasedDate,
       imageURL: data.imageURL.present ? data.imageURL.value : this.imageURL,
       weight: data.weight.present ? data.weight.value : this.weight,
+      price: data.price.present ? data.price.value : this.price,
       health: data.health.present ? data.health.value : this.health,
+      type: data.type.present ? data.type.value : this.type,
       exportType:
           data.exportType.present ? data.exportType.value : this.exportType,
       electronicId: data.electronicId.present
           ? data.electronicId.value
           : this.electronicId,
+      isDiscarded:
+          data.isDiscarded.present ? data.isDiscarded.value : this.isDiscarded,
       isInventoried: data.isInventoried.present
           ? data.isInventoried.value
           : this.isInventoried,
@@ -645,11 +756,15 @@ class AnimalEntry extends DataClass implements Insertable<AnimalEntry> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('birthDate: $birthDate, ')
+          ..write('purchasedDate: $purchasedDate, ')
           ..write('imageURL: $imageURL, ')
           ..write('weight: $weight, ')
+          ..write('price: $price, ')
           ..write('health: $health, ')
+          ..write('type: $type, ')
           ..write('exportType: $exportType, ')
           ..write('electronicId: $electronicId, ')
+          ..write('isDiscarded: $isDiscarded, ')
           ..write('isInventoried: $isInventoried, ')
           ..write('isStallion: $isStallion, ')
           ..write('breedId: $breedId, ')
@@ -665,11 +780,15 @@ class AnimalEntry extends DataClass implements Insertable<AnimalEntry> {
       id,
       name,
       birthDate,
+      purchasedDate,
       imageURL,
       weight,
+      price,
       health,
+      type,
       exportType,
       electronicId,
+      isDiscarded,
       isInventoried,
       isStallion,
       breedId,
@@ -683,11 +802,15 @@ class AnimalEntry extends DataClass implements Insertable<AnimalEntry> {
           other.id == this.id &&
           other.name == this.name &&
           other.birthDate == this.birthDate &&
+          other.purchasedDate == this.purchasedDate &&
           other.imageURL == this.imageURL &&
           other.weight == this.weight &&
+          other.price == this.price &&
           other.health == this.health &&
+          other.type == this.type &&
           other.exportType == this.exportType &&
           other.electronicId == this.electronicId &&
+          other.isDiscarded == this.isDiscarded &&
           other.isInventoried == this.isInventoried &&
           other.isStallion == this.isStallion &&
           other.breedId == this.breedId &&
@@ -700,11 +823,15 @@ class AnimalEntriesCompanion extends UpdateCompanion<AnimalEntry> {
   final Value<int> id;
   final Value<String> name;
   final Value<DateTime?> birthDate;
+  final Value<DateTime?> purchasedDate;
   final Value<String?> imageURL;
   final Value<String?> weight;
+  final Value<String?> price;
   final Value<String?> health;
+  final Value<String?> type;
   final Value<String?> exportType;
   final Value<String?> electronicId;
+  final Value<bool?> isDiscarded;
   final Value<bool> isInventoried;
   final Value<bool> isStallion;
   final Value<int?> breedId;
@@ -715,11 +842,15 @@ class AnimalEntriesCompanion extends UpdateCompanion<AnimalEntry> {
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.birthDate = const Value.absent(),
+    this.purchasedDate = const Value.absent(),
     this.imageURL = const Value.absent(),
     this.weight = const Value.absent(),
+    this.price = const Value.absent(),
     this.health = const Value.absent(),
+    this.type = const Value.absent(),
     this.exportType = const Value.absent(),
     this.electronicId = const Value.absent(),
+    this.isDiscarded = const Value.absent(),
     this.isInventoried = const Value.absent(),
     this.isStallion = const Value.absent(),
     this.breedId = const Value.absent(),
@@ -731,11 +862,15 @@ class AnimalEntriesCompanion extends UpdateCompanion<AnimalEntry> {
     this.id = const Value.absent(),
     required String name,
     this.birthDate = const Value.absent(),
+    this.purchasedDate = const Value.absent(),
     this.imageURL = const Value.absent(),
     this.weight = const Value.absent(),
+    this.price = const Value.absent(),
     this.health = const Value.absent(),
+    this.type = const Value.absent(),
     this.exportType = const Value.absent(),
     this.electronicId = const Value.absent(),
+    this.isDiscarded = const Value.absent(),
     this.isInventoried = const Value.absent(),
     this.isStallion = const Value.absent(),
     this.breedId = const Value.absent(),
@@ -747,11 +882,15 @@ class AnimalEntriesCompanion extends UpdateCompanion<AnimalEntry> {
     Expression<int>? id,
     Expression<String>? name,
     Expression<DateTime>? birthDate,
+    Expression<DateTime>? purchasedDate,
     Expression<String>? imageURL,
     Expression<String>? weight,
+    Expression<String>? price,
     Expression<String>? health,
+    Expression<String>? type,
     Expression<String>? exportType,
     Expression<String>? electronicId,
+    Expression<bool>? isDiscarded,
     Expression<bool>? isInventoried,
     Expression<bool>? isStallion,
     Expression<int>? breedId,
@@ -763,11 +902,15 @@ class AnimalEntriesCompanion extends UpdateCompanion<AnimalEntry> {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (birthDate != null) 'birth_date': birthDate,
+      if (purchasedDate != null) 'purchased_date': purchasedDate,
       if (imageURL != null) 'image_u_r_l': imageURL,
       if (weight != null) 'weight': weight,
+      if (price != null) 'price': price,
       if (health != null) 'health': health,
+      if (type != null) 'type': type,
       if (exportType != null) 'export_type': exportType,
       if (electronicId != null) 'electronic_id': electronicId,
+      if (isDiscarded != null) 'is_discarded': isDiscarded,
       if (isInventoried != null) 'is_inventoried': isInventoried,
       if (isStallion != null) 'is_stallion': isStallion,
       if (breedId != null) 'breed_id': breedId,
@@ -781,11 +924,15 @@ class AnimalEntriesCompanion extends UpdateCompanion<AnimalEntry> {
       {Value<int>? id,
       Value<String>? name,
       Value<DateTime?>? birthDate,
+      Value<DateTime?>? purchasedDate,
       Value<String?>? imageURL,
       Value<String?>? weight,
+      Value<String?>? price,
       Value<String?>? health,
+      Value<String?>? type,
       Value<String?>? exportType,
       Value<String?>? electronicId,
+      Value<bool?>? isDiscarded,
       Value<bool>? isInventoried,
       Value<bool>? isStallion,
       Value<int?>? breedId,
@@ -796,11 +943,15 @@ class AnimalEntriesCompanion extends UpdateCompanion<AnimalEntry> {
       id: id ?? this.id,
       name: name ?? this.name,
       birthDate: birthDate ?? this.birthDate,
+      purchasedDate: purchasedDate ?? this.purchasedDate,
       imageURL: imageURL ?? this.imageURL,
       weight: weight ?? this.weight,
+      price: price ?? this.price,
       health: health ?? this.health,
+      type: type ?? this.type,
       exportType: exportType ?? this.exportType,
       electronicId: electronicId ?? this.electronicId,
+      isDiscarded: isDiscarded ?? this.isDiscarded,
       isInventoried: isInventoried ?? this.isInventoried,
       isStallion: isStallion ?? this.isStallion,
       breedId: breedId ?? this.breedId,
@@ -822,20 +973,32 @@ class AnimalEntriesCompanion extends UpdateCompanion<AnimalEntry> {
     if (birthDate.present) {
       map['birth_date'] = Variable<DateTime>(birthDate.value);
     }
+    if (purchasedDate.present) {
+      map['purchased_date'] = Variable<DateTime>(purchasedDate.value);
+    }
     if (imageURL.present) {
       map['image_u_r_l'] = Variable<String>(imageURL.value);
     }
     if (weight.present) {
       map['weight'] = Variable<String>(weight.value);
     }
+    if (price.present) {
+      map['price'] = Variable<String>(price.value);
+    }
     if (health.present) {
       map['health'] = Variable<String>(health.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
     }
     if (exportType.present) {
       map['export_type'] = Variable<String>(exportType.value);
     }
     if (electronicId.present) {
       map['electronic_id'] = Variable<String>(electronicId.value);
+    }
+    if (isDiscarded.present) {
+      map['is_discarded'] = Variable<bool>(isDiscarded.value);
     }
     if (isInventoried.present) {
       map['is_inventoried'] = Variable<bool>(isInventoried.value);
@@ -864,11 +1027,15 @@ class AnimalEntriesCompanion extends UpdateCompanion<AnimalEntry> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('birthDate: $birthDate, ')
+          ..write('purchasedDate: $purchasedDate, ')
           ..write('imageURL: $imageURL, ')
           ..write('weight: $weight, ')
+          ..write('price: $price, ')
           ..write('health: $health, ')
+          ..write('type: $type, ')
           ..write('exportType: $exportType, ')
           ..write('electronicId: $electronicId, ')
+          ..write('isDiscarded: $isDiscarded, ')
           ..write('isInventoried: $isInventoried, ')
           ..write('isStallion: $isStallion, ')
           ..write('breedId: $breedId, ')
@@ -1050,11 +1217,15 @@ typedef $$AnimalEntriesTableCreateCompanionBuilder = AnimalEntriesCompanion
   Value<int> id,
   required String name,
   Value<DateTime?> birthDate,
+  Value<DateTime?> purchasedDate,
   Value<String?> imageURL,
   Value<String?> weight,
+  Value<String?> price,
   Value<String?> health,
+  Value<String?> type,
   Value<String?> exportType,
   Value<String?> electronicId,
+  Value<bool?> isDiscarded,
   Value<bool> isInventoried,
   Value<bool> isStallion,
   Value<int?> breedId,
@@ -1067,11 +1238,15 @@ typedef $$AnimalEntriesTableUpdateCompanionBuilder = AnimalEntriesCompanion
   Value<int> id,
   Value<String> name,
   Value<DateTime?> birthDate,
+  Value<DateTime?> purchasedDate,
   Value<String?> imageURL,
   Value<String?> weight,
+  Value<String?> price,
   Value<String?> health,
+  Value<String?> type,
   Value<String?> exportType,
   Value<String?> electronicId,
+  Value<bool?> isDiscarded,
   Value<bool> isInventoried,
   Value<bool> isStallion,
   Value<int?> breedId,
@@ -1146,6 +1321,11 @@ class $$AnimalEntriesTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
+  ColumnFilters<DateTime> get purchasedDate => $state.composableBuilder(
+      column: $state.table.purchasedDate,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
   ColumnFilters<String> get imageURL => $state.composableBuilder(
       column: $state.table.imageURL,
       builder: (column, joinBuilders) =>
@@ -1156,8 +1336,18 @@ class $$AnimalEntriesTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
+  ColumnFilters<String> get price => $state.composableBuilder(
+      column: $state.table.price,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
   ColumnFilters<String> get health => $state.composableBuilder(
       column: $state.table.health,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get type => $state.composableBuilder(
+      column: $state.table.type,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -1168,6 +1358,11 @@ class $$AnimalEntriesTableFilterComposer
 
   ColumnFilters<String> get electronicId => $state.composableBuilder(
       column: $state.table.electronicId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get isDiscarded => $state.composableBuilder(
+      column: $state.table.isDiscarded,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -1241,6 +1436,11 @@ class $$AnimalEntriesTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
+  ColumnOrderings<DateTime> get purchasedDate => $state.composableBuilder(
+      column: $state.table.purchasedDate,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
   ColumnOrderings<String> get imageURL => $state.composableBuilder(
       column: $state.table.imageURL,
       builder: (column, joinBuilders) =>
@@ -1251,8 +1451,18 @@ class $$AnimalEntriesTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
+  ColumnOrderings<String> get price => $state.composableBuilder(
+      column: $state.table.price,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
   ColumnOrderings<String> get health => $state.composableBuilder(
       column: $state.table.health,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get type => $state.composableBuilder(
+      column: $state.table.type,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
@@ -1263,6 +1473,11 @@ class $$AnimalEntriesTableOrderingComposer
 
   ColumnOrderings<String> get electronicId => $state.composableBuilder(
       column: $state.table.electronicId,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get isDiscarded => $state.composableBuilder(
+      column: $state.table.isDiscarded,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
@@ -1343,11 +1558,15 @@ class $$AnimalEntriesTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<DateTime?> birthDate = const Value.absent(),
+            Value<DateTime?> purchasedDate = const Value.absent(),
             Value<String?> imageURL = const Value.absent(),
             Value<String?> weight = const Value.absent(),
+            Value<String?> price = const Value.absent(),
             Value<String?> health = const Value.absent(),
+            Value<String?> type = const Value.absent(),
             Value<String?> exportType = const Value.absent(),
             Value<String?> electronicId = const Value.absent(),
+            Value<bool?> isDiscarded = const Value.absent(),
             Value<bool> isInventoried = const Value.absent(),
             Value<bool> isStallion = const Value.absent(),
             Value<int?> breedId = const Value.absent(),
@@ -1359,11 +1578,15 @@ class $$AnimalEntriesTableTableManager extends RootTableManager<
             id: id,
             name: name,
             birthDate: birthDate,
+            purchasedDate: purchasedDate,
             imageURL: imageURL,
             weight: weight,
+            price: price,
             health: health,
+            type: type,
             exportType: exportType,
             electronicId: electronicId,
+            isDiscarded: isDiscarded,
             isInventoried: isInventoried,
             isStallion: isStallion,
             breedId: breedId,
@@ -1375,11 +1598,15 @@ class $$AnimalEntriesTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             required String name,
             Value<DateTime?> birthDate = const Value.absent(),
+            Value<DateTime?> purchasedDate = const Value.absent(),
             Value<String?> imageURL = const Value.absent(),
             Value<String?> weight = const Value.absent(),
+            Value<String?> price = const Value.absent(),
             Value<String?> health = const Value.absent(),
+            Value<String?> type = const Value.absent(),
             Value<String?> exportType = const Value.absent(),
             Value<String?> electronicId = const Value.absent(),
+            Value<bool?> isDiscarded = const Value.absent(),
             Value<bool> isInventoried = const Value.absent(),
             Value<bool> isStallion = const Value.absent(),
             Value<int?> breedId = const Value.absent(),
@@ -1391,11 +1618,15 @@ class $$AnimalEntriesTableTableManager extends RootTableManager<
             id: id,
             name: name,
             birthDate: birthDate,
+            purchasedDate: purchasedDate,
             imageURL: imageURL,
             weight: weight,
+            price: price,
             health: health,
+            type: type,
             exportType: exportType,
             electronicId: electronicId,
+            isDiscarded: isDiscarded,
             isInventoried: isInventoried,
             isStallion: isStallion,
             breedId: breedId,

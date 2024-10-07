@@ -13,16 +13,14 @@ class AnimalController extends GetxController {
   }
 
   Future<void> getAllAnimal() async {
-    isLoading.value = true;
+    isLoading.value = false;
     var res = await database.db.select(database.db.animalEntries).get();
 
     animals.value = res.toList();
-    isLoading.value = false;
+    isLoading.value = true;
   }
 
-  removeAnimal(int index){
-
-  }
+  removeAnimal(int index) {}
 
   @override
   void onInit() async {
