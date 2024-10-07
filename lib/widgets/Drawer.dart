@@ -40,6 +40,14 @@ class DrawerNav extends StatelessWidget {
             },
           ),
           ListTile(
+            leading:  const Icon(Icons.event),
+            title: const Text('Eventos'),
+            onTap: () {
+              Navigator.pop(context);
+              Get.toNamed('/agenda');
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.person),
             title: const Text('Perfil'),
             onTap: () {
