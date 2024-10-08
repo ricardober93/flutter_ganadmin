@@ -4,21 +4,19 @@ import 'package:calendar_agenda/calendar_agenda.dart';
 class AgendaController extends GetxController {
   final CalendarAgendaController calendarAgendaControllerAppBar =
       CalendarAgendaController();
-  final CalendarAgendaController calendarAgendaControllerNotAppBar =
-      CalendarAgendaController();
 
-  late DateTime _selectedDateAppBBar;
-  late DateTime _selectedDateNotAppBBar;
+
+  late DateTime selectedDateAppBBar;
 
 
   onDateSelect(date){
-    _selectedDateAppBBar = date;
+    selectedDateAppBBar = date;
   }
 
   @override
   void onInit() {
-    _selectedDateAppBBar = DateTime.now();
-    _selectedDateNotAppBBar = DateTime.now();
+    selectedDateAppBBar = DateTime.now();
+
 
     super.onInit();
   }
@@ -26,7 +24,6 @@ class AgendaController extends GetxController {
   @override
   void onClose() {
     calendarAgendaControllerAppBar.dispose();
-    calendarAgendaControllerNotAppBar.dispose();
     super.onClose();
   }
 }

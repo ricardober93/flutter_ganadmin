@@ -1,6 +1,6 @@
 import 'package:admin_animal_flutter/controllers/animal_controller.dart';
-import 'package:admin_animal_flutter/extension/dateTime_extension.dart';
-import 'package:admin_animal_flutter/widgets/Drawer.dart';
+import 'package:admin_animal_flutter/extension/date_time_extension.dart';
+import 'package:admin_animal_flutter/widgets/drawer_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

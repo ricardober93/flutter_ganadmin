@@ -1,7 +1,7 @@
 import 'package:admin_animal_flutter/controllers/home_controller.dart';
-import 'package:admin_animal_flutter/widgets/AnimalStat.dart';
-import 'package:admin_animal_flutter/widgets/AnimalStatSkeleton.dart';
-import 'package:admin_animal_flutter/widgets/Drawer.dart';
+import 'package:admin_animal_flutter/widgets/animal_stat.dart';
+import 'package:admin_animal_flutter/widgets/animal_stat_skeleton.dart';
+import 'package:admin_animal_flutter/widgets/drawer_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

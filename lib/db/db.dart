@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:flutter/foundation.dart';
 
 import 'tables.dart';
 
@@ -19,7 +20,9 @@ class AppDatabase extends _$AppDatabase {
   static QueryExecutor _openConnection() {
     // `driftDatabase` from `package:drift_flutter` stores the database in
     // `getApplicationDocumentsDirectory()`.
-    print('base de datos Iniciada');
+    if (kDebugMode) {
+      print('base de datos Iniciada');
+    }
     return driftDatabase(name: 'app');
   }
 }

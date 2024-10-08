@@ -1,5 +1,5 @@
 import 'package:admin_animal_flutter/controllers/create_animal_controller.dart';
-import 'package:admin_animal_flutter/widgets/AnimalSearchField.dart';
+import 'package:admin_animal_flutter/widgets/animal_search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';

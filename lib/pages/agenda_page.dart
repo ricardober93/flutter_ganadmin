@@ -1,5 +1,5 @@
 import 'package:admin_animal_flutter/controllers/agenda_controller.dart';
-import 'package:admin_animal_flutter/widgets/Drawer.dart';
+import 'package:admin_animal_flutter/widgets/drawer_nav.dart';
 import 'package:calendar_agenda/calendar_agenda.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,7 +27,7 @@ class AgendaPage extends StatelessWidget {
             ),
             onPressed: () {},
           ),
-          initialDate: DateTime.now(),
+          initialDate: agendaCtr.selectedDateAppBBar,
           firstDate: DateTime.now().subtract(const Duration(days: 140)),
           lastDate: DateTime.now().add(const Duration(days: 60)),
           onDateSelected: agendaCtr.onDateSelect,
@@ -38,7 +38,7 @@ class AgendaPage extends StatelessWidget {
             onPressed: () {
               agendaCtr.calendarAgendaControllerAppBar.goToDay(DateTime.now());
             },
-            child: Text("Today, appbar = true"),
+            child: const Text("Today, appbar = true"),
           )
         ])));
   }
