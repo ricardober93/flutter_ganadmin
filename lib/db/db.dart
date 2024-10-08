@@ -6,7 +6,7 @@ import 'tables.dart';
 
 part 'db.g.dart';
 
-@DriftDatabase(tables: [AnimalEntries, BreedEntries])
+@DriftDatabase(tables: [AnimalEntries, BreedEntries, EventEntries])
 class AppDatabase extends _$AppDatabase {
 
 // After generating code, this class needs to define a `schemaVersion` getter

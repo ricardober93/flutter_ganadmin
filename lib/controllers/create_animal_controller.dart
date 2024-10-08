@@ -23,9 +23,9 @@ class CreateAnimalController extends GetxController {
   var animalType = "birth".obs;
   var animalStatus = "".obs;
   var animalNameFather = TextEditingController();
-  var codeFather = 0;
+  var codeFather;
   var animalNameMother = TextEditingController();
-  var codeMother = 0;
+  var codeMother;
   var animalWeight = TextEditingController();
 
   List<String> items = ["birth", "Purchase"];

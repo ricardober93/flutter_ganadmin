@@ -30,3 +30,13 @@ class BreedEntries extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text()();
 }
+
+@DataClassName('EventEntry')
+class EventEntries extends Table {
+  IntColumn get id => integer().autoIncrement()(); // ID único
+  TextColumn get title => text().withLength(min: 1, max: 100)();
+  TextColumn get description => text().nullable()();
+  DateTimeColumn get date => dateTime()(); // Fecha del evento
+  TextColumn get eventType => text().withLength(min: 1, max: 50)();
+  IntColumn get animalId =>  integer().nullable().references(AnimalEntries, #id)();
+}

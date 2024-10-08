@@ -1,5 +1,6 @@
 import 'package:admin_animal_flutter/controllers/create_animal_controller.dart';
 import 'package:admin_animal_flutter/widgets/animal_search_field.dart';
+import 'package:admin_animal_flutter/widgets/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -51,7 +52,7 @@ class CreateAnimal extends StatelessWidget {
               const SizedBox(height: 16),
 
               // Tipo de Adquisición
-              Obx(  () => _buildDropdown(
+              Obx(  () => CustomDropdown(
                 label: "Adquisición del animal",
                 value: animalCreateCtr.animalType.value.isEmpty
                     ? null
@@ -140,7 +141,7 @@ class CreateAnimal extends StatelessWidget {
                       const SizedBox(height: 16),
 
                       // Estado del Animal
-                      _buildDropdown(
+                      CustomDropdown(
                         label: "Estado del animal",
                         value: animalCreateCtr.animalStatus.value.isEmpty
                             ? null
@@ -194,36 +195,6 @@ class CreateAnimal extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: FilledButton(
             onPressed: createAnimal, child: const Text("Crear Ficha")),
-      ),
-    );
-  }
-
-  // Widget para Dropdown personalizado
-  Widget _buildDropdown({
-    required String label,
-    required String? value,
-    required List<String> items,
-    required Function(String?) onChanged,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(4.0),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          isExpanded: true,
-          value: value,
-          hint: Text(label),
-          onChanged: onChanged,
-          items: items.map((String item) {
-            return DropdownMenuItem<String>(
-              value: item,
-              child: Text(item),
-            );
-          }).toList(),
-        ),
       ),
     );
   }
