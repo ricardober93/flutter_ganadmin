@@ -1,10 +1,12 @@
 import 'package:admin_animal_flutter/controllers/create_animal_controller.dart';
 import 'package:admin_animal_flutter/controllers/database_controller.dart';
 import 'package:admin_animal_flutter/db/db.dart';
+import 'package:admin_animal_flutter/extension/string_extension.dart';
 import 'package:drift/drift.dart' as d;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:calendar_agenda/calendar_agenda.dart';
+import 'package:intl/intl.dart';
 
 class AgendaController extends GetxController {
   var isLoading = false.obs;
@@ -16,7 +18,7 @@ class AgendaController extends GetxController {
   final CalendarAgendaController calendarAgendaControllerAppBar =
       CalendarAgendaController();
 
-  late DateTime selectedDateAppBBar;
+  late DateTime selectedDateAppBar;
 
   var titleController = TextEditingController();
   var descriptionController = TextEditingController();
@@ -25,8 +27,11 @@ class AgendaController extends GetxController {
   var codeId;
   var animalId = TextEditingController();
 
+  var agendaDate = TextEditingController();
+
   onDateSelect(date) {
-    selectedDateAppBBar = date;
+    selectedDateAppBar = date;
+    getEventsForDate(selectedDateAppBar);
   }
 
   setTypeEvent(String type) {
@@ -50,21 +55,58 @@ class AgendaController extends GetxController {
     isLoading.value = false;
   }
 
+  Future<void> selectDateTime(BuildContext context) async {
+    // Seleccionamos la fecha
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2040),
+    );
+
+    if (pickedDate != null) {
+      // Seleccionamos la hora y minutos
+      TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+
+      if (pickedTime != null) {
+        // Combinamos la fecha y la hora
+        var fullDateTime = DateTime(
+          pickedDate.year,
+          pickedDate.month,
+          pickedDate.day,
+          pickedTime.hour,
+          pickedTime.minute,
+        );
+
+        // Formatear la fecha y la hora (ejemplo: yyyy-MM-dd HH:mm)
+        String formattedDateTime =
+            DateFormat('yyyy-MM-dd HH:mm').format(fullDateTime);
+        agendaDate.text = formattedDateTime; // Establecer el texto formateado
+      }
+    }
+  }
+
   Future<void> insertEvent({
     required String title,
     String? description,
     required DateTime date,
     required String eventType,
   }) async {
-    codeId = animalCreateCtr.animalList
-        .firstWhere((animal) => animal.name == animalId.text)
-        .id;
+    if (animalId.text.isNotEmpty) {
+      codeId = animalCreateCtr.animalList
+          .firstWhere((animal) => animal.name == animalId.text)
+          .id;
+    }
 
-    final newEvent = EventEntriesCompanion(
-      title: d.Value(title),
-      description: d.Value(description), // Puede ser nulo
-      date: d.Value(date),
-      eventType: d.Value(eventType),
+    final newEvent = EventEntriesCompanion.insert(
+      title: title,
+      description:
+          description != null ? d.Value(description) : const d.Value.absent(),
+      date: date,
+      eventType: eventType,
       animalId: codeId != null ? d.Value(codeId) : const d.Value.absent(),
     );
 
@@ -73,9 +115,9 @@ class AgendaController extends GetxController {
 
   @override
   void onInit() async {
-    selectedDateAppBBar = DateTime.now();
+    selectedDateAppBar = DateTime.now();
     await animalCreateCtr.animalCtr.getAllAnimal();
-    await getEventsForDate(selectedDateAppBBar);
+    await getEventsForDate(selectedDateAppBar);
     super.onInit();
   }
 
@@ -85,6 +127,8 @@ class AgendaController extends GetxController {
     titleController.dispose();
     descriptionController.dispose();
     animalId.dispose();
+    agendaDate.dispose();
+
     super.onClose();
   }
 
@@ -96,10 +140,44 @@ class AgendaController extends GetxController {
     Get.bottomSheet(sheet, backgroundColor: Colors.white);
   }
 
-  void createEvent() {
-    print(titleController.text);
-    print(descriptionController.text);
+  void createEvent() async {
+    try {
+      await insertEvent(
+        title: titleController.text,
+        eventType: typeEvent.value,
+        description: descriptionController.text,
+        date: agendaDate.text.toDateTime(),
+      );
 
-    print(typeEvent.value);
+      // Cerrar el modal
+      Get.back();
+
+      Get.snackbar(
+        'Evento creado',
+        'Se ha creado el evento correctamente',
+        backgroundColor: Colors.green.shade400,
+        colorText: Colors.white,
+      );
+      // Limpiar los controladores de texto
+      clearInputs();
+
+      // Actualizar la lista de eventos para la fecha seleccionada
+      getEventsForDate(selectedDateAppBar);
+    } catch (e) {
+      print(e);
+      Get.snackbar('No se podido crear el evento',
+          'Error: Hemos tenido un error al crear el evento, intenta de nuevo mas tarde.');
+    }
+
+    back();
+  }
+
+  void clearInputs() {
+    titleController.clear();
+    descriptionController.clear();
+    animalId.clear();
+    agendaDate.clear();
+    typeEvent.value = '';
+    codeId = null;
   }
 }

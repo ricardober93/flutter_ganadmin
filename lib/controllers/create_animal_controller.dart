@@ -2,6 +2,7 @@ import 'package:admin_animal_flutter/controllers/animal_controller.dart';
 import 'package:admin_animal_flutter/controllers/database_controller.dart';
 import 'package:admin_animal_flutter/db/db.dart';
 import 'package:admin_animal_flutter/extension/date_time_extension.dart';
+import 'package:admin_animal_flutter/extension/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:drift/drift.dart' as d;
@@ -78,7 +79,7 @@ class CreateAnimalController extends GetxController {
     );
     if (pickedDate != null) {
       animalBirthDate.text =
-          pickedDate.format().toString(); // Format date as yyyy-MM-dd
+          pickedDate.shortFormat().toString(); // Format date as yyyy-MM-dd
     }
   }
 
@@ -91,30 +92,67 @@ class CreateAnimalController extends GetxController {
     );
     if (pickedDate != null) {
       animalPurchasedDate.text =
-          pickedDate.format().toString(); // Format date as yyyy-MM-dd
+          pickedDate.shortFormat().toString(); // Format date as yyyy-MM-dd
     }
   }
 
   Future<int> createAnimal() async {
-    codeFather = animalList
-        .firstWhere((animal) => animal.name == animalNameFather.text)
-        .id;
-    codeMother = animalList
-        .firstWhere((animal) => animal.name == animalNameMother.text)
-        .id;
+    if (animalNameFather.text.isNotEmpty) {
+      codeFather = animalList
+          .firstWhere((animal) => animal.name == animalNameFather.text)
+          .id;
+    }
+    if (animalNameMother.text.isNotEmpty) {
+      codeMother = animalList
+          .firstWhere((animal) => animal.name == animalNameMother.text)
+          .id;
+    }
 
-    return await database.db.into(database.db.animalEntries).insert(
+    final res = await database.db.into(database.db.animalEntries).insert(
           AnimalEntriesCompanion.insert(
-              birthDate: d.Value(DateTime.parse(animalBirthDate.text)),
-              name: animalName.text,
-              isInventoried: d.Value(animalIsInventoried.value),
-              isStallion: d.Value(animalIsStallion.value),
-              health: d.Value(animalStatus.value),
-              weight: d.Value(animalWeight.text),
-              codeFather: d.Value(codeFather),
-              isDiscarded: d.Value(animalIsDiscarded.value),
-              codeMother: d.Value(codeMother)),
+            birthDate: animalBirthDate.text.isNotEmpty
+                ? d.Value(animalBirthDate.text.toDateTime())
+                : const d.Value.absent(),
+            name: animalName.text,
+            isInventoried: d.Value(animalIsInventoried.value),
+            isStallion: d.Value(animalIsStallion.value),
+            health: d.Value(animalStatus.value),
+            weight: d.Value(animalWeight.text),
+            codeFather: codeFather != null
+                ? d.Value(codeFather)
+                : const d.Value.absent(),
+            isDiscarded: d.Value(animalIsDiscarded.value),
+            codeMother: codeMother != null
+                ? d.Value(codeMother)
+                : const d.Value.absent(),
+          ),
         );
+
+    //CLEAR CONTROLLERS
+    clearInputs();
+
+    return res;
+  }
+
+  void clearInputs() {
+    animalName.clear();
+    animalBirthDate.clear();
+    animalPurchasedDate.clear();
+    animalPrice.clear();
+    animalWeight.clear();
+    animalNameFather.clear();
+    animalNameMother.clear();
+    animalIsDiscarded.value = false;
+    animalIsInventoried.value = false;
+    animalIsStallion.value = false;
+    animalStatus.value = "";
+    animalType.value = "birth";
+    codeFather = null;
+    codeMother = null;
+    showMore.value = false;
+
+    animalList.assignAll(animalCtr.animals);
+    filteredList.assignAll(animalCtr.animals);
   }
 
   void toggleShowMore() => showMore.value = !showMore.value;
