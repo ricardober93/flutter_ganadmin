@@ -39,7 +39,7 @@ class EventTile extends StatelessWidget {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: lightGreen!.withOpacity(0.2), // Fondo suave verde claro
+                color: lightGreen.withOpacity(0.2), // Fondo suave verde claro
                 borderRadius: BorderRadius.circular(8.0), // Bordes redondeados
               ),
               child: ListTile(
