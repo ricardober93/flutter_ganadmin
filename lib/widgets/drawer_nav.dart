@@ -48,14 +48,6 @@ class DrawerNav extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text('Perfil'),
-            onTap: () {
-              Navigator.pop(context);
-              Get.toNamed('/profile');
-            },
-          ),
-          ListTile(
             leading: const Icon(Icons.settings),
             title: const Text('Settings'),
             onTap: () {

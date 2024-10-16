@@ -8,7 +8,6 @@ void main() async {
 
   Get.put(DatabaseController());
 
-
   runApp(const MyApp());
 }
 
