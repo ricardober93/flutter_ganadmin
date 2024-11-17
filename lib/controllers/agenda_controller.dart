@@ -67,8 +67,8 @@ class AgendaController extends GetxController {
     if (pickedDate != null) {
       // Seleccionamos la hora y minutos
       TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
         initialTime: TimeOfDay.now(),
+        context: context,
       );
 
       if (pickedTime != null) {

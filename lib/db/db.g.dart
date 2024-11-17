@@ -1396,18 +1396,401 @@ class EventEntriesCompanion extends UpdateCompanion<EventEntry> {
   }
 }
 
+class $UserEntriesTable extends UserEntries
+    with TableInfo<$UserEntriesTable, UserEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UserEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _emailMeta = const VerificationMeta('email');
+  @override
+  late final GeneratedColumn<String> email = GeneratedColumn<String>(
+      'email', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 6, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 2, maxTextLength: 50),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _passwordMeta =
+      const VerificationMeta('password');
+  @override
+  late final GeneratedColumn<String> password = GeneratedColumn<String>(
+      'password', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedColumn<String> phone = GeneratedColumn<String>(
+      'phone', aliasedName, true,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 8, maxTextLength: 15),
+      type: DriftSqlType.string,
+      requiredDuringInsert: false);
+  static const VerificationMeta _addressMeta =
+      const VerificationMeta('address');
+  @override
+  late final GeneratedColumn<String> address = GeneratedColumn<String>(
+      'address', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, email, name, password, phone, address, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'user_entries';
+  @override
+  VerificationContext validateIntegrity(Insertable<UserEntry> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('email')) {
+      context.handle(
+          _emailMeta, email.isAcceptableOrUnknown(data['email']!, _emailMeta));
+    } else if (isInserting) {
+      context.missing(_emailMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('password')) {
+      context.handle(_passwordMeta,
+          password.isAcceptableOrUnknown(data['password']!, _passwordMeta));
+    } else if (isInserting) {
+      context.missing(_passwordMeta);
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+          _phoneMeta, phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta));
+    }
+    if (data.containsKey('address')) {
+      context.handle(_addressMeta,
+          address.isAcceptableOrUnknown(data['address']!, _addressMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UserEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UserEntry(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      email: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}email'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      password: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}password'])!,
+      phone: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}phone']),
+      address: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}address']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at']),
+    );
+  }
+
+  @override
+  $UserEntriesTable createAlias(String alias) {
+    return $UserEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class UserEntry extends DataClass implements Insertable<UserEntry> {
+  final int id;
+  final String email;
+  final String name;
+  final String password;
+  final String? phone;
+  final String? address;
+  final DateTime? createdAt;
+  const UserEntry(
+      {required this.id,
+      required this.email,
+      required this.name,
+      required this.password,
+      this.phone,
+      this.address,
+      this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['email'] = Variable<String>(email);
+    map['name'] = Variable<String>(name);
+    map['password'] = Variable<String>(password);
+    if (!nullToAbsent || phone != null) {
+      map['phone'] = Variable<String>(phone);
+    }
+    if (!nullToAbsent || address != null) {
+      map['address'] = Variable<String>(address);
+    }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    return map;
+  }
+
+  UserEntriesCompanion toCompanion(bool nullToAbsent) {
+    return UserEntriesCompanion(
+      id: Value(id),
+      email: Value(email),
+      name: Value(name),
+      password: Value(password),
+      phone:
+          phone == null && nullToAbsent ? const Value.absent() : Value(phone),
+      address: address == null && nullToAbsent
+          ? const Value.absent()
+          : Value(address),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+    );
+  }
+
+  factory UserEntry.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UserEntry(
+      id: serializer.fromJson<int>(json['id']),
+      email: serializer.fromJson<String>(json['email']),
+      name: serializer.fromJson<String>(json['name']),
+      password: serializer.fromJson<String>(json['password']),
+      phone: serializer.fromJson<String?>(json['phone']),
+      address: serializer.fromJson<String?>(json['address']),
+      createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'email': serializer.toJson<String>(email),
+      'name': serializer.toJson<String>(name),
+      'password': serializer.toJson<String>(password),
+      'phone': serializer.toJson<String?>(phone),
+      'address': serializer.toJson<String?>(address),
+      'createdAt': serializer.toJson<DateTime?>(createdAt),
+    };
+  }
+
+  UserEntry copyWith(
+          {int? id,
+          String? email,
+          String? name,
+          String? password,
+          Value<String?> phone = const Value.absent(),
+          Value<String?> address = const Value.absent(),
+          Value<DateTime?> createdAt = const Value.absent()}) =>
+      UserEntry(
+        id: id ?? this.id,
+        email: email ?? this.email,
+        name: name ?? this.name,
+        password: password ?? this.password,
+        phone: phone.present ? phone.value : this.phone,
+        address: address.present ? address.value : this.address,
+        createdAt: createdAt.present ? createdAt.value : this.createdAt,
+      );
+  UserEntry copyWithCompanion(UserEntriesCompanion data) {
+    return UserEntry(
+      id: data.id.present ? data.id.value : this.id,
+      email: data.email.present ? data.email.value : this.email,
+      name: data.name.present ? data.name.value : this.name,
+      password: data.password.present ? data.password.value : this.password,
+      phone: data.phone.present ? data.phone.value : this.phone,
+      address: data.address.present ? data.address.value : this.address,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserEntry(')
+          ..write('id: $id, ')
+          ..write('email: $email, ')
+          ..write('name: $name, ')
+          ..write('password: $password, ')
+          ..write('phone: $phone, ')
+          ..write('address: $address, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, email, name, password, phone, address, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UserEntry &&
+          other.id == this.id &&
+          other.email == this.email &&
+          other.name == this.name &&
+          other.password == this.password &&
+          other.phone == this.phone &&
+          other.address == this.address &&
+          other.createdAt == this.createdAt);
+}
+
+class UserEntriesCompanion extends UpdateCompanion<UserEntry> {
+  final Value<int> id;
+  final Value<String> email;
+  final Value<String> name;
+  final Value<String> password;
+  final Value<String?> phone;
+  final Value<String?> address;
+  final Value<DateTime?> createdAt;
+  const UserEntriesCompanion({
+    this.id = const Value.absent(),
+    this.email = const Value.absent(),
+    this.name = const Value.absent(),
+    this.password = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.address = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  UserEntriesCompanion.insert({
+    this.id = const Value.absent(),
+    required String email,
+    required String name,
+    required String password,
+    this.phone = const Value.absent(),
+    this.address = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  })  : email = Value(email),
+        name = Value(name),
+        password = Value(password);
+  static Insertable<UserEntry> custom({
+    Expression<int>? id,
+    Expression<String>? email,
+    Expression<String>? name,
+    Expression<String>? password,
+    Expression<String>? phone,
+    Expression<String>? address,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (email != null) 'email': email,
+      if (name != null) 'name': name,
+      if (password != null) 'password': password,
+      if (phone != null) 'phone': phone,
+      if (address != null) 'address': address,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  UserEntriesCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? email,
+      Value<String>? name,
+      Value<String>? password,
+      Value<String?>? phone,
+      Value<String?>? address,
+      Value<DateTime?>? createdAt}) {
+    return UserEntriesCompanion(
+      id: id ?? this.id,
+      email: email ?? this.email,
+      name: name ?? this.name,
+      password: password ?? this.password,
+      phone: phone ?? this.phone,
+      address: address ?? this.address,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (email.present) {
+      map['email'] = Variable<String>(email.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (password.present) {
+      map['password'] = Variable<String>(password.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (address.present) {
+      map['address'] = Variable<String>(address.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('email: $email, ')
+          ..write('name: $name, ')
+          ..write('password: $password, ')
+          ..write('phone: $phone, ')
+          ..write('address: $address, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $BreedEntriesTable breedEntries = $BreedEntriesTable(this);
   late final $AnimalEntriesTable animalEntries = $AnimalEntriesTable(this);
   late final $EventEntriesTable eventEntries = $EventEntriesTable(this);
+  late final $UserEntriesTable userEntries = $UserEntriesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [breedEntries, animalEntries, eventEntries];
+      [breedEntries, animalEntries, eventEntries, userEntries];
 }
 
 typedef $$BreedEntriesTableCreateCompanionBuilder = BreedEntriesCompanion
@@ -2337,6 +2720,178 @@ typedef $$EventEntriesTableProcessedTableManager = ProcessedTableManager<
     (EventEntry, $$EventEntriesTableReferences),
     EventEntry,
     PrefetchHooks Function({bool animalId})>;
+typedef $$UserEntriesTableCreateCompanionBuilder = UserEntriesCompanion
+    Function({
+  Value<int> id,
+  required String email,
+  required String name,
+  required String password,
+  Value<String?> phone,
+  Value<String?> address,
+  Value<DateTime?> createdAt,
+});
+typedef $$UserEntriesTableUpdateCompanionBuilder = UserEntriesCompanion
+    Function({
+  Value<int> id,
+  Value<String> email,
+  Value<String> name,
+  Value<String> password,
+  Value<String?> phone,
+  Value<String?> address,
+  Value<DateTime?> createdAt,
+});
+
+class $$UserEntriesTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $UserEntriesTable> {
+  $$UserEntriesTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get email => $state.composableBuilder(
+      column: $state.table.email,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get password => $state.composableBuilder(
+      column: $state.table.password,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get phone => $state.composableBuilder(
+      column: $state.table.phone,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get address => $state.composableBuilder(
+      column: $state.table.address,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$UserEntriesTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $UserEntriesTable> {
+  $$UserEntriesTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get email => $state.composableBuilder(
+      column: $state.table.email,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get password => $state.composableBuilder(
+      column: $state.table.password,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get phone => $state.composableBuilder(
+      column: $state.table.phone,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get address => $state.composableBuilder(
+      column: $state.table.address,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $$UserEntriesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $UserEntriesTable,
+    UserEntry,
+    $$UserEntriesTableFilterComposer,
+    $$UserEntriesTableOrderingComposer,
+    $$UserEntriesTableCreateCompanionBuilder,
+    $$UserEntriesTableUpdateCompanionBuilder,
+    (UserEntry, BaseReferences<_$AppDatabase, $UserEntriesTable, UserEntry>),
+    UserEntry,
+    PrefetchHooks Function()> {
+  $$UserEntriesTableTableManager(_$AppDatabase db, $UserEntriesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$UserEntriesTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$UserEntriesTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> email = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> password = const Value.absent(),
+            Value<String?> phone = const Value.absent(),
+            Value<String?> address = const Value.absent(),
+            Value<DateTime?> createdAt = const Value.absent(),
+          }) =>
+              UserEntriesCompanion(
+            id: id,
+            email: email,
+            name: name,
+            password: password,
+            phone: phone,
+            address: address,
+            createdAt: createdAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String email,
+            required String name,
+            required String password,
+            Value<String?> phone = const Value.absent(),
+            Value<String?> address = const Value.absent(),
+            Value<DateTime?> createdAt = const Value.absent(),
+          }) =>
+              UserEntriesCompanion.insert(
+            id: id,
+            email: email,
+            name: name,
+            password: password,
+            phone: phone,
+            address: address,
+            createdAt: createdAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$UserEntriesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $UserEntriesTable,
+    UserEntry,
+    $$UserEntriesTableFilterComposer,
+    $$UserEntriesTableOrderingComposer,
+    $$UserEntriesTableCreateCompanionBuilder,
+    $$UserEntriesTableUpdateCompanionBuilder,
+    (UserEntry, BaseReferences<_$AppDatabase, $UserEntriesTable, UserEntry>),
+    UserEntry,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2347,4 +2902,6 @@ class $AppDatabaseManager {
       $$AnimalEntriesTableTableManager(_db, _db.animalEntries);
   $$EventEntriesTableTableManager get eventEntries =>
       $$EventEntriesTableTableManager(_db, _db.eventEntries);
+  $$UserEntriesTableTableManager get userEntries =>
+      $$UserEntriesTableTableManager(_db, _db.userEntries);
 }

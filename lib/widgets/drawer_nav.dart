@@ -1,3 +1,4 @@
+import 'package:admin_animal_flutter/controllers/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -6,23 +7,25 @@ class DrawerNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var userCtr = Get.put(UserController());
 
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blueGrey,
-            ),
-            child: Text(
-              "Ricardo Bermudez",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
+          DrawerHeader(
+              decoration: const BoxDecoration(
+                color: Colors.blueGrey,
               ),
-            ),
-          ),
+              child: Obx(() {
+                return Text(
+                  userCtr.userName.value,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                );
+              })),
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text('Home'),
@@ -32,7 +35,7 @@ class DrawerNav extends StatelessWidget {
             },
           ),
           ListTile(
-            leading:  const Icon(Icons.manage_history),
+            leading: const Icon(Icons.manage_history),
             title: const Text('Animales'),
             onTap: () {
               Navigator.pop(context);
@@ -40,7 +43,7 @@ class DrawerNav extends StatelessWidget {
             },
           ),
           ListTile(
-            leading:  const Icon(Icons.event),
+            leading: const Icon(Icons.event),
             title: const Text('Eventos'),
             onTap: () {
               Navigator.pop(context);

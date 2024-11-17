@@ -40,3 +40,14 @@ class EventEntries extends Table {
   TextColumn get eventType => text().withLength(min: 1, max: 50)();
   IntColumn get animalId =>  integer().nullable().references(AnimalEntries, #id)();
 }
+
+@DataClassName('UserEntry')
+class UserEntries extends Table {
+  IntColumn get id => integer().autoIncrement()(); // ID único
+  TextColumn get email => text().withLength(min: 6, max: 100)(); // Aseguramos que el correo sea único
+  TextColumn get name => text().withLength(min: 2, max: 50)(); // Nombre
+  TextColumn get password => text()(); // Contraseña
+  TextColumn get phone => text().withLength(min: 8, max: 15).nullable()(); // Teléfono
+  TextColumn get address => text().nullable()(); // Dirección
+  DateTimeColumn get createdAt => dateTime().nullable()(); // Fecha de creación
+}

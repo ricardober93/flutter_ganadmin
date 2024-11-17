@@ -6,7 +6,7 @@ import 'tables.dart';
 
 part 'db.g.dart';
 
-@DriftDatabase(tables: [AnimalEntries, BreedEntries, EventEntries])
+@DriftDatabase(tables: [AnimalEntries, BreedEntries, EventEntries, UserEntries])
 class AppDatabase extends _$AppDatabase {
 
 // After generating code, this class needs to define a `schemaVersion` getter
@@ -15,7 +15,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   static QueryExecutor _openConnection() {
     // `driftDatabase` from `package:drift_flutter` stores the database in
@@ -35,6 +35,9 @@ class AppDatabase extends _$AppDatabase {
       onUpgrade: (Migrator m, int from, int to) async {
         if (from < 2) {
           await m.createTable(eventEntries);
+        }
+        if (from < 3) {
+          await m.createTable(userEntries);
         }
       },
     );
