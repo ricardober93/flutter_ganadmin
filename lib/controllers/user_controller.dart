@@ -16,9 +16,14 @@ class UserController extends GetxController {
   var userTextField = TextEditingController();
 
   var userEmail = "".obs;
+  var emailTextField = TextEditingController();
+
   var userPassword = "".obs;
   var userPhone = "".obs;
+  var phoneTextField = TextEditingController();
+
   var userAddress = "".obs;
+  var addressTextField = TextEditingController();
 
   void showLoading() {
     loadingUser.value = true;
@@ -33,11 +38,11 @@ class UserController extends GetxController {
       return Get.back();
     }
     userName.value = userTextField.text;
-    (database.db.update(database.db.userEntries)
+    await (database.db.update(database.db.userEntries)
           ..where((user) => user.id.equals(int.parse(userId.value))))
         .write(
       UserEntriesCompanion(
-        name: d.Value(userName.value), // Solo actualizamos el campo `name`
+        name: d.Value(userName.value),
       ),
     );
 
@@ -46,11 +51,65 @@ class UserController extends GetxController {
     Get.back();
   }
 
+  Future<void> updateUserEmail() async {
+    if (emailTextField.text == "") {
+      return Get.back();
+    }
+    userEmail.value = emailTextField.text;
+    await (database.db.update(database.db.userEntries)
+          ..where((user) => user.id.equals(int.parse(userId.value))))
+        .write(
+      UserEntriesCompanion(
+        email: d.Value(userEmail.value),
+      ),
+    );
+
+    emailTextField.clear();
+
+    Get.back();
+  }
+
+  Future<void> updateUserPhone() async {
+    if (phoneTextField.text == "") {
+      return Get.back();
+    }
+    userPhone.value = phoneTextField.text;
+    await (database.db.update(database.db.userEntries)
+      ..where((user) => user.id.equals(int.parse(userId.value))))
+        .write(
+      UserEntriesCompanion(
+        phone: d.Value(userPhone.value),
+      ),
+    );
+
+    phoneTextField.clear();
+
+    Get.back();
+  }
+
+  Future<void> updateUserAddress() async {
+    if (addressTextField.text == "") {
+      return Get.back();
+    }
+    userAddress.value = addressTextField.text;
+    await (database.db.update(database.db.userEntries)
+      ..where((user) => user.id.equals(int.parse(userId.value))))
+        .write(
+      UserEntriesCompanion(
+        address: d.Value(userAddress.value),
+      ),
+    );
+
+    addressTextField.clear();
+
+    Get.back();
+  }
+
   @override
   void onInit() async {
     var user = await database.db.select(database.db.userEntries).getSingle();
 
-    if (user.name == "") {
+    if (user.name.isEmpty) {
       Get.toNamed('/create-user');
     } else {
       userId.value = user.id.toString();
@@ -59,6 +118,10 @@ class UserController extends GetxController {
       userPassword.value = user.password;
       userPhone.value = user.phone ?? '';
       userAddress.value = user.address ?? '';
+
+      userTextField.text = user.name;
+      emailTextField.text = user.email;
+      phoneTextField.text = user.phone ?? "";
 
       Get.toNamed('/home');
     }

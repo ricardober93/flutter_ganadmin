@@ -10,6 +10,13 @@ android {
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
+   // signingConfig {
+    //     release {
+    //          storeFile file("C:\\Users\\Ricardo Bermudez\\claves_apps\\flutter_admin.jks") // Ruta al archivo de clave
+    //         storePassword "Ricardo93."
+    //     }
+    //  }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8

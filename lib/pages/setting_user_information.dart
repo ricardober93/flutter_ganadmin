@@ -10,58 +10,93 @@ class SettingUserInformation extends StatelessWidget {
     var userCtr = Get.put(UserController());
 
     updateUserNameBottomSheet() {
-      Get.bottomSheet(bottomSheet(), backgroundColor: Colors.white);
+      Get.bottomSheet(bottomSheet(
+        'nombre',
+        userCtr.userTextField,
+        userCtr.updateUSerName
+      ), backgroundColor: Colors.white);
+    }
+
+    updateUserEmailBottomSheet(){
+      Get.bottomSheet(bottomSheet(
+        'Correo electronico',
+        userCtr.emailTextField,
+        userCtr.updateUserEmail
+      ), backgroundColor: Colors.white);
+    }
+
+    updateUserPhoneBottomSheet(){
+      Get.bottomSheet(bottomSheet(
+          'Telefono',
+          userCtr.phoneTextField,
+          userCtr.updateUserPhone
+      ), backgroundColor: Colors.white);
+    }
+
+    updateUserAddressBottomSheet(){
+      Get.bottomSheet(bottomSheet(
+          'Direccion',
+          userCtr.addressTextField,
+          userCtr.updateUserAddress
+      ), backgroundColor: Colors.white);
     }
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('Informacion del Usuario'),
+          title: const Text('Informacion del Usuario'),
         ),
         body: Wrap(runSpacing: 16, children: [
           Obx(() {
             return ListTile(
                 title: const Text('Nombre'),
                 subtitle: Text(userCtr.userName.value ?? ''),
-                leading: Icon(Icons.person),
-                trailing: Icon(Icons.edit),
+                leading: const Icon(Icons.person),
+                trailing: const Icon(Icons.edit),
                 onTap: () {
                   updateUserNameBottomSheet();
                 });
           }),
           Obx(() {
             return  ListTile(
-              title: Text('Correo Electrónico'),
+              title: const Text('Correo Electrónico'),
               subtitle:Text(userCtr.userEmail.value ?? ''),
-              leading: Icon(Icons.email),
-              trailing: Icon(Icons.edit),
+              leading: const Icon(Icons.email),
+              trailing: const Icon(Icons.edit),
               onTap: () {
-                // Navegar a la pantalla de edición de correo electrónico
+                updateUserEmailBottomSheet();
               },
             );
           }),
-          ListTile(
-            title: Text('Teléfono'),
-            subtitle: Text('+1 123 456 7890'),
-            leading: Icon(Icons.phone),
-            trailing: Icon(Icons.edit),
-            onTap: () {
-              // Navegar a la pantalla de edición de teléfono
-            },
-          ),
-          ListTile(
-            title: Text('Dirección'),
-            subtitle: Text('123 Main St, Anytown, USA'),
-            leading: Icon(Icons.home),
-            trailing: Icon(Icons.edit),
-            onTap: () {
-              // Navegar a la pantalla de edición de dirección
-            },
-          ),
+          Obx( (){
+            return ListTile(
+              title: const Text('Teléfono'),
+              subtitle: Text( userCtr.userPhone.value ?? ''),
+              leading: const Icon(Icons.phone),
+              trailing: const Icon(Icons.edit),
+              onTap: () {
+                updateUserPhoneBottomSheet();
+              },
+            );
+          }),
+          Obx( (){
+           return ListTile(
+              title: const Text('Dirección'),
+              subtitle: Text(userCtr.userAddress.value ?? ''),
+              leading: const Icon(Icons.home),
+              trailing: const Icon(Icons.edit),
+              onTap: () {
+                updateUserAddressBottomSheet();
+              },
+            );
+          })
         ]));
   }
 
-  Widget bottomSheet() {
-    var userCtr = Get.put(UserController());
+  Widget bottomSheet(
+     String title,
+     TextEditingController controller,
+     VoidCallback action
+      ) {
 
     return Container(
       height: 300,
@@ -71,16 +106,16 @@ class SettingUserInformation extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            const Text(
-              "Deseas actualizar tu nombre?",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+            Text(
+              "Deseas actualizar tu $title",
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 24),
             TextField(
-              controller: userCtr.userTextField,
-              decoration: const InputDecoration(
-                labelText: 'Nombre del Usuario',
-                border: OutlineInputBorder(),
+              controller: controller,
+              decoration:  InputDecoration(
+                labelText: title,
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 24),
@@ -88,8 +123,8 @@ class SettingUserInformation extends StatelessWidget {
               width: double.infinity,
               height: 50,
               child: FilledButton(
-                  onPressed: userCtr.updateUSerName,
-                  child: const Text("actualizar nombre")),
+                  onPressed: action,
+                  child: Text("actualizar $title")),
             )
           ],
         ),

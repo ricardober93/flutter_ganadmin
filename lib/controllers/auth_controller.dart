@@ -11,12 +11,6 @@ class AuthController extends GetxController {
   var nameController = TextEditingController();
   var passWordController = TextEditingController();
 
-  @override
-  void onInit() async {
-    super.onInit();
-    print('onInit SettingController');
-  }
-
   void createuser() async {
     var mail = emailController.text;
     var name = nameController.text;

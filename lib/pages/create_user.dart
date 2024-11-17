@@ -1,5 +1,4 @@
 import 'package:admin_animal_flutter/controllers/auth_controller.dart';
-import 'package:admin_animal_flutter/controllers/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
