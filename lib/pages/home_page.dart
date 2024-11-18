@@ -12,6 +12,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     var controller = Get.put(HomeController());
 
+    controller.onInit();
+
     return Scaffold(
       drawer: const DrawerNav(),
       appBar: AppBar(
@@ -30,7 +32,6 @@ class HomePage extends StatelessWidget {
                   icon: Icons.upload,
                   title: 'Animales totales',
                 );
-
               }
             })
           ],

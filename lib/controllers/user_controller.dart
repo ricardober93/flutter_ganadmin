@@ -1,7 +1,7 @@
 import 'package:admin_animal_flutter/controllers/database_controller.dart';
+import 'package:drift/drift.dart' as d;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:drift/drift.dart' as d;
 
 import '../db/db.dart';
 
@@ -75,7 +75,7 @@ class UserController extends GetxController {
     }
     userPhone.value = phoneTextField.text;
     await (database.db.update(database.db.userEntries)
-      ..where((user) => user.id.equals(int.parse(userId.value))))
+          ..where((user) => user.id.equals(int.parse(userId.value))))
         .write(
       UserEntriesCompanion(
         phone: d.Value(userPhone.value),
@@ -93,7 +93,7 @@ class UserController extends GetxController {
     }
     userAddress.value = addressTextField.text;
     await (database.db.update(database.db.userEntries)
-      ..where((user) => user.id.equals(int.parse(userId.value))))
+          ..where((user) => user.id.equals(int.parse(userId.value))))
         .write(
       UserEntriesCompanion(
         address: d.Value(userAddress.value),
@@ -107,11 +107,14 @@ class UserController extends GetxController {
 
   @override
   void onInit() async {
-    var user = await database.db.select(database.db.userEntries).getSingle();
+    super.onInit();
 
-    if (user.name.isEmpty) {
-      Get.toNamed('/create-user');
-    } else {
+    try {
+      var user = await database.db.select(database.db.userEntries).getSingle();
+
+      if (user.name.isEmpty) {
+        Get.toNamed('/create-user');
+      }
       userId.value = user.id.toString();
       userEmail.value = user.email;
       userName.value = user.name;
@@ -124,9 +127,9 @@ class UserController extends GetxController {
       phoneTextField.text = user.phone ?? "";
 
       Get.toNamed('/home');
+    } catch (e) {
+      Get.toNamed('/create-user');
     }
-
-    super.onInit();
   }
 
   @override

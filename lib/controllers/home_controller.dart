@@ -1,4 +1,3 @@
-
 import 'package:admin_animal_flutter/controllers/database_controller.dart';
 import 'package:get/get.dart';
 
@@ -10,17 +9,15 @@ class HomeController extends GetxController {
   var animaCount = '0'.obs;
 
   Future<void> countTotalAnimal() async {
-    isLoading.value = true;
-    var count = await database.db.managers.animalEntries.count();
-    animaCount.value = count.toString();
+    var animals = await database.db.select(database.db.animalEntries).get();
+    animaCount.value = animals.length.toString();
     isLoading.value = false;
   }
 
-
   @override
-  void onInit() async  {
-    await countTotalAnimal();
+  void onInit() async {
     super.onInit();
+    isLoading.value = true;
+    await countTotalAnimal();
   }
-
 }
