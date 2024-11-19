@@ -24,7 +24,8 @@ class HomePage extends StatelessWidget {
         child: Wrap(
           children: [
             Obx(() {
-              if (controller.isLoading.value) {
+              if (controller.isLoading.value &&
+                  controller.animaCount.value.isNotEmpty) {
                 return const AnimalStatSkeleton();
               } else {
                 return AnimalStat(

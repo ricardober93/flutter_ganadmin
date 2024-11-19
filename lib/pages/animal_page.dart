@@ -12,8 +12,6 @@ class AnimalPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var ctr = Get.put(AnimalController());
 
-    ctr.onInit();
-
     return Scaffold(
       drawer: const DrawerNav(),
       appBar: AppBar(
@@ -34,7 +32,8 @@ class AnimalPage extends StatelessWidget {
               return AnimalListTile(
                   name: animal.name,
                   birthDate: animal.birthDate!.shortFormat(),
-                  onDelete: () => ctr.removeAnimal(index));
+                  onDelete: () =>
+                      Get.dialog(dialogCustom(context, ctr.animals[index].id)));
             },
           );
         }
@@ -66,6 +65,58 @@ class AnimalPage extends StatelessWidget {
             Get.bottomSheet(bottomSheet(context),
                 backgroundColor: Colors.white);
           }),
+    );
+  }
+
+  Widget dialogCustom(BuildContext context, int index) {
+    var ctr = Get.put(AnimalController());
+
+    return Center(
+      child: Container(
+        height: 200,
+        width: 300,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Center(
+          child: Column(
+            children: [
+              Text(
+                "Desea eliminar el animal?",
+                style: TextStyle(fontSize: 24, color: Colors.black),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 48,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    child: FilledButton(
+                        style: FilledButton.styleFrom(
+                            backgroundColor: Colors.grey,
+                            foregroundColor: Colors.black54),
+                        onPressed: () => Navigator.pop(context),
+                        child: Text("No")),
+                  ),
+                  SizedBox(
+                    child: FilledButton(
+                        style: FilledButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white),
+                        onPressed: () => ctr.removeAnimal(index),
+                        child: Text("confimar")),
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 
